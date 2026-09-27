@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>几何仓库 · Geometry Warehouse</title>
+<meta name="description" content="几何仓库：一款几何联动机制的推箱子解谜游戏，可在浏览器中直接试玩。">
+<style>
+  :root {
+    --bg: #0e1217;
+    --panel: #161d26;
+    --line: #2a3441;
+    --text: #e8edf3;
+    --muted: #93a1b0;
+    --accent: #ffd54a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+    line-height: 1.7;
+  }
+  header {
+    text-align: center;
+    padding: 64px 16px 40px;
+  }
+  header h1 { font-size: 42px; letter-spacing: 8px; }
+  header p.sub { color: var(--muted); margin-top: 8px; letter-spacing: 2px; }
+  .cta {
+    display: inline-block;
+    margin-top: 28px;
+    padding: 14px 48px;
+    font-size: 20px;
+    color: #1a1a1a;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 4px;
+  }
+  .cta:hover { filter: brightness(1.08); }
+  .note { color: var(--muted); font-size: 13px; margin-top: 12px; }
+  main { max-width: 880px; margin: 0 auto; padding: 0 16px 64px; }
+  section { margin-top: 40px; }
+  h2 { font-size: 22px; border-left: 4px solid var(--accent); padding-left: 12px; margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .card h3 { font-size: 16px; margin-bottom: 8px; color: var(--accent); }
+  .card p, .card li { color: var(--muted); font-size: 14px; }
+  .card ul { padding-left: 18px; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 10px; overflow: hidden; }
+  th, td { padding: 10px 16px; text-align: left; font-size: 14px; border-bottom: 1px solid var(--line); }
+  th { color: var(--accent); font-weight: normal; }
+  td.kbd { white-space: nowrap; }
+  kbd {
+    display: inline-block; padding: 1px 8px; border: 1px solid var(--line);
+    border-bottom-width: 2px; border-radius: 5px; background: #1d2632;
+    font-family: inherit; font-size: 13px;
+  }
+  footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px; border-top: 1px solid var(--line); }
+  footer a { color: var(--muted); }
+  #player {
+    display: none;
+    margin: 32px auto 0;
+    width: min(100%, calc(92vh * 1440 / 940));
+    background: #000;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  #player.fullscreen {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+  }
+  #player iframe { display: block; width: 100%; aspect-ratio: 1440 / 940; height: auto; border: 0; }
+  #player.fullscreen iframe { height: 100%; }
+  #fsBtn {
+    display: none;
+    margin: 12px auto 0;
+    padding: 8px 28px;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 2px;
+  }
+  #fsBtn:hover { border-color: var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>几何仓库</h1>
+  <p class="sub">GEOMETRY WAREHOUSE · 几何联动推箱子</p>
+  <button class="cta" id="playBtn">开始试玩</button>
+  <p class="note">建议使用桌面版浏览器 · 首次加载约 40 MB，请耐心等待进度条</p>
+</header>
+
+<div id="player">
+  <iframe id="gameFrame" title="几何仓库试玩" allow="fullscreen"></iframe>
+</div>
+<button id="fsBtn">全屏显示</button>
+
+<main>
+  <section>
+    <h2>这是什么游戏</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>推箱子 × 几何作图</h3>
+        <p>用「直线」和「圆」把多个箱子绑定成联动组：推动主动箱时，从动箱按固定比例或夹角跟随移动；推动从动箱，则整组图形一起平移。</p>
+      </div>
+      <div class="card">
+        <h3>擦除与重组</h3>
+        <p>自己画下的黄色关系可以擦除，从动箱会吸附回最近的合法格点。合理规划绑定与释放的顺序，是通关的关键。</p>
+      </div>
+      <div class="card">
+        <h3>第一章八关</h3>
+        <p>从基础作图到连锁顶推逐步进阶，通关进度自动保存在本机，随时接着玩。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>操作速查</h2>
+    <table>
+      <tr><th>按键</th><th>功能</th></tr>
+      <tr><td class="kbd"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / 方向键</td><td>移动与推动箱子</td></tr>
+      <tr><td class="kbd"><kbd>1</kbd></td><td>移动模式</td></tr>
+      <tr><td class="kbd"><kbd>2</kbd></td><td>作直线：依次点击两个主动箱</td></tr>
+      <tr><td class="kbd"><kbd>3</kbd></td><td>作圆：先点圆心，再点圆周主动箱</td></tr>
+      <tr><td class="kbd"><kbd>4</kbd></td><td>擦除黄色关系</td></tr>
+      <tr><td class="kbd"><kbd>Esc</kbd> / 右键</td><td>取消当前操作</td></tr>
+      <tr><td class="kbd"><kbd>Z</kbd></td><td>撤销一次完整行动</td></tr>
+      <tr><td class="kbd"><kbd>R</kbd></td><td>重开本关</td></tr>
+      <tr><td class="kbd"><kbd>N</kbd></td><td>返回选关</td></tr>
+    </table>
+  </section>
+</main>
+
+<footer>
+  本游戏使用开源引擎 <a href="https://godotengine.org" target="_blank" rel="noopener">Godot</a> 制作 · 关卡数据保存在您的浏览器本地
+</footer>
+
+<script>
+  document.getElementById('playBtn').addEventListener('click', function () {
+    var player = document.getElementById('player');
+    var frame = document.getElementById('gameFrame');
+    if (!frame.src) { frame.src = 'play/index.html'; }
+    player.style.display = 'block';
+    document.getElementById('fsBtn').style.display = 'block';
+    player.scrollIntoView({ behavior: 'smooth' });
+    this.textContent = '重新打开试玩窗口';
+  });
+  document.getElementById('fsBtn').addEventListener('click', function () {
+    var player = document.getElementById('player');
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      player.requestFullscreen();
+    }
+  });
+  document.addEventListener('fullscreenchange', function () {
+    document.getElementById('fsBtn').textContent =
+      document.fullscreenElement ? '退出全屏' : '全屏显示';
+  });
+</script>
+</body>
+</html>
